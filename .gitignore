@@ -1,0 +1,12 @@
+.idea
+.env
+
+/www/web/.cache
+/www/web/dist
+/www/web/node_modules
+/www/web/package-lock.json
+/www/web/public
+/www/web/env.json
+
+/nginx/web.conf
+/nginx/api.conf

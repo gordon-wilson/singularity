@@ -1,0 +1,76 @@
+version: "2.1"
+
+services:
+  buildtool:
+    container_name: buildtool
+    build: ./buildTool
+    ports:
+      - 1234:1234
+      - 1235:1235
+    volumes:
+      - "${WEB_PROJECT_ROOT}:/app"
+    env_file:
+      - ./buildTool/.env
+    environment:
+      - CHOKIDAR_USEPOLLING=1
+    extra_hosts:
+      - ${API_URL}:127.0.0.1
+      - ${WEB_URL}:127.0.0.2
+
+  nginx:
+    container_name: nginx
+    build: ./nginx/
+    ports:
+      - 80:80
+    volumes:
+      - "${API_PROJECT_ROOT}:/var/www/api"
+      - "${WEB_PROJECT_ROOT}:/var/www/web"
+    networks:
+      - server
+    depends_on:
+      - php
+
+  php:
+    container_name: php
+    build: ./php/
+    expose:
+      - 9000
+    volumes:
+      - "${API_PROJECT_ROOT}:/var/www/api"
+      - "${WEB_PROJECT_ROOT}:/var/www/web"
+    networks:
+      - server
+      - database
+    depends_on:
+      - mysql
+
+  composer:
+    container_name: composer
+    build: ./composer/
+    expose:
+      - 9000
+    volumes:
+      - "${API_PROJECT_ROOT}:/var/www/api"
+      - "${WEB_PROJECT_ROOT}:/var/www/web"
+
+  mysql:
+    container_name: mysql
+    build: ./mysql
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - database
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+
+volumes:
+  data:
+
+networks:
+  database:
+  server:

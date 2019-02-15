@@ -1,0 +1,10 @@
+DB_ROOT_PASSWORD=secret
+DB_NAME=project
+DB_USERNAME=project
+DB_PASSWORD=project
+
+API_PROJECT_ROOT=./www/api
+WEB_PROJECT_ROOT=./www/web
+
+API_URL=api.website.local
+WEB_URL=website.local
